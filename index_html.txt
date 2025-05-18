@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Resume Analyzer Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+    }
+    #result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Resume Analyzer</h1>
+  <p>Select your resume file (PDF, DOCX)</p>
+  <input type="file" id="resume" />
+  <br />
+  <button onclick="analyzeResume()">Analyze Resume</button>
+  <div id="result"></div>
+
+  <script>
+    async function analyzeResume() {
+      const fileInput = document.getElementById('resume');
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please upload your resume file.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('resume', file);
+
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = 'Analyzing...';
+
+      try {
+        const res = await fetch('https://your-backend-url.onrender.com/analyze', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        resultDiv.innerHTML = `
+          <h3>Score: ${data.score}/100</h3>
+          <p>${data.suggestion}</p>
+        `;
+      } catch (err) {
+        resultDiv.innerHTML = 'Error analyzing resume.';
+      }
+    }
+  </script>
+</body>
+</html>
